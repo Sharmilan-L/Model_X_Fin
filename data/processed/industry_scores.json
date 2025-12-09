@@ -1,0 +1,112 @@
+{
+  "Apparel": {
+    "risk_score": 0.8,
+    "opp_score": 0,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
+      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+    ]
+  },
+  "FoodBeverage": {
+    "risk_score": 0.35,
+    "opp_score": 0.85,
+    "risk_level": "Medium",
+    "opp_level": "High",
+    "top_drivers": [
+      "More than 60% of Asia and Pacific’s population lifted from water insecurity",
+      "How South Asia Can Adapt to Extreme Heat - Time Magazine",
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+    ]
+  },
+  "Water": {
+    "risk_score": 0.0,
+    "opp_score": 0.85,
+    "risk_level": "Low",
+    "opp_level": "High",
+    "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+    ]
+  },
+  "Retail": {
+    "risk_score": 0.8,
+    "opp_score": 0,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
+      "Sri Lanka issues fresh landslide warnings as death toll hits 607\nColombo, Sri Lanka - The New Indian Express",
+      "Motorcycle registrations dominate this year  – Commissioner General"
+    ]
+  },
+  "Tourism": {
+    "risk_score": 0.8,
+    "opp_score": 0,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+    ]
+  },
+  "IT": {
+    "risk_score": 0.37,
+    "opp_score": 0.11,
+    "risk_level": "Medium",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
+      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
+      "India scales up cyclone relief efforts in Sri Lanka under Operation Sagar Bandhu - MorungExpress"
+    ]
+  },
+  "Agriculture": {
+    "risk_score": 0.8,
+    "opp_score": 0,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
+      "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+    ]
+  },
+  "Logistics": {
+    "risk_score": 0.8,
+    "opp_score": 0,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+    ]
+  },
+  "Energy": {
+    "risk_score": 0.8,
+    "opp_score": 0.48,
+    "risk_level": "High",
+    "opp_level": "Medium",
+    "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+    ]
+  },
+  "Banking": {
+    "risk_score": 0.62,
+    "opp_score": 0.85,
+    "risk_level": "High",
+    "opp_level": "High",
+    "top_drivers": [
+      "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
+      "Monetary Policy Review - No. 6 of 2025",
+      "Monetary Policy Review - No. 5 of 2025"
+    ]
+  }
+}
