@@ -10,6 +10,9 @@ from pathlib import Path
 from textwrap import dedent
 import re
 
+# Auto-refresh every 30 minutes (1800 seconds)
+st.autorefresh(interval=1800 * 1000, key="auto_refresh_30min")
+
 # ----------------------------------------------------
 # Helpers
 # ----------------------------------------------------
@@ -19,6 +22,23 @@ def clean_html(text: str) -> str:
         return ""
     clean = re.compile("<.*?>")
     return re.sub(clean, "", text).strip()
+
+
+def extract_industries_from_row(row_dict):
+    """Extract industry blocks from a district row into a DataFrame."""
+    items = []
+    for key, value in row_dict.items():
+        if isinstance(value, dict) and "risk_score" in value:
+            items.append(
+                {
+                    "industry": key,
+                    "risk_score": value["risk_score"],
+                    "opp_score": value["opp_score"],
+                    "risk_level": value["risk_level"],
+                    "opp_level": value["opp_level"],
+                }
+            )
+    return pd.DataFrame(items)
 
 
 st.set_page_config(page_title="Sri Lanka Dashboard", layout="wide")
@@ -62,9 +82,13 @@ district_df = load_district_scores()
 # ----------------------------------------------------
 # CREATE TABS
 # ----------------------------------------------------
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["🌍 National Overview", "📍 District Insights",
-     "🏭 Industry Insights", "📰 Event Explorer", "🎯 Recommendations"]
+tab1, tab2, tab3 = st.tabs(
+    [
+        "🌍 National Overview",
+        "📍 District Insights",
+        "🏭 Industry Insights",
+       
+    ]
 )
 
 # ----------------------------------------------------
@@ -77,6 +101,18 @@ with tab1:
 
     last_time = df["timestamp"].max()
     st.caption(f"Last Updated: **{last_time}**")
+
+    # Little intro block matching your criteria bullet list
+    st.markdown(
+        """
+**This dashboard highlights:**
+
+- **National Activity Indicators**
+- **Operational Environment Indicators**
+- **Risk & Opportunity Insights**
+"""
+    )
+
     st.markdown("---")
 
     # ------------------------------------------------
@@ -95,10 +131,68 @@ with tab1:
     col4.metric("🏷️ Categories Active", active_categories)
 
     # ------------------------------------------------
-    # RISK MAP
+    # 🛰 NATIONAL ACTIVITY INDICATORS
     # ------------------------------------------------
+    st.markdown("## 📡 National Activity Indicators")
+
+    # Convert timestamps once for trends
+    df_ts = df.copy()
+    df_ts["ts"] = pd.to_datetime(df_ts["timestamp"], errors="coerce", utc=True)
+    df_ts = df_ts.dropna(subset=["ts"])
+
+    if not df_ts.empty:
+        # Hourly aggregation for activity trend
+        hourly = (
+            df_ts.set_index("ts")["severity"]
+            .resample("1H")
+            .agg(["count", "mean"])
+            .reset_index()
+        )
+        hourly.rename(
+            columns={"count": "event_count", "mean": "avg_severity"}, inplace=True
+        )
+
+        cA, cB = st.columns(2)
+
+        with cA:
+            fig_events_trend = px.line(
+                hourly,
+                x="ts",
+                y="event_count",
+                title="Events Over Time (Hourly)",
+                markers=True,
+            )
+            fig_events_trend.update_layout(
+                xaxis_title="Time", yaxis_title="Number of Events"
+            )
+            st.plotly_chart(
+                fig_events_trend,
+                use_container_width=True,
+                key="national_events_trend",
+            )
+
+        with cB:
+            fig_severity_trend = px.line(
+                hourly,
+                x="ts",
+                y="avg_severity",
+                title="Average Severity Over Time (Hourly)",
+                markers=True,
+            )
+            fig_severity_trend.update_layout(
+                xaxis_title="Time", yaxis_title="Average Severity"
+            )
+            st.plotly_chart(
+                fig_severity_trend,
+                use_container_width=True,
+                key="national_severity_trend",
+            )
+
     st.markdown("### 🗺️ District Risk Heatmap (From Model Scores)")
 
+    # ------------------------------------------------
+    # RISK MAP
+    # ------------------------------------------------
     if district_df is not None and not district_df.empty:
         risk_df = district_df.copy()
 
@@ -195,6 +289,122 @@ with tab1:
     st.markdown("---")
 
     # ------------------------------------------------
+    # ⚙️ OPERATIONAL ENVIRONMENT INDICATORS
+    # ------------------------------------------------
+    st.markdown("## ⚙️ Operational Environment Indicators")
+
+    if district_df is not None and not district_df.empty:
+        all_industry_rows = []
+        for _, drow in district_df.iterrows():
+            ind_df = extract_industries_from_row(drow.to_dict())
+            if not ind_df.empty:
+                ind_df["district"] = drow["district"]
+                all_industry_rows.append(ind_df)
+
+        if all_industry_rows:
+            all_ind = pd.concat(all_industry_rows, ignore_index=True)
+
+            infra_industries = [
+                "Energy",
+                "Water",
+                "Logistics",
+                "Agriculture",
+                "IT",
+                "Banking",
+                "Hospitals",
+                "Transport",
+            ]
+            business_industries = [
+                "Retail",
+                "Tourism",
+                "Apparel",
+                "FoodBeverage",
+                "Banking",
+                "IT",
+            ]
+
+            infra = all_ind[all_ind["industry"].isin(infra_industries)]
+            business = all_ind[all_ind["industry"].isin(business_industries)]
+
+            infra_risk = infra["risk_score"].mean() if not infra.empty else 0.0
+            infra_opp = infra["opp_score"].mean() if not infra.empty else 0.0
+            business_risk = business["risk_score"].mean() if not business.empty else 0.0
+            business_opp = (
+                business["opp_score"].mean() if not business.empty else 0.0
+            )
+
+            cI1, cI2, cI3, cI4 = st.columns(4)
+            cI1.metric("Infrastructure Risk", f"{infra_risk:.2f}")
+            cI2.metric("Infrastructure Opportunity", f"{infra_opp:.2f}")
+            cI3.metric("Business Risk", f"{business_risk:.2f}")
+            cI4.metric("Business Opportunity", f"{business_opp:.2f}")
+
+            env_df = pd.DataFrame(
+                {
+                    "Indicator": [
+                        "Infrastructure Risk",
+                        "Infrastructure Opportunity",
+                        "Business Risk",
+                        "Business Opportunity",
+                    ],
+                    "Score": [
+                        infra_risk,
+                        infra_opp,
+                        business_risk,
+                        business_opp,
+                    ],
+                }
+            )
+
+            fig_env = px.bar(
+                env_df,
+                x="Indicator",
+                y="Score",
+                text="Score",
+                range_y=[0, 1],
+                title="Operational Environment Snapshot",
+                color="Score",
+                color_continuous_scale=["red", "yellow", "green"],
+            )
+            st.plotly_chart(
+                fig_env, use_container_width=True, key="operational_env_bar"
+            )
+        else:
+            st.info("No industry data available yet for operational indicators.")
+    else:
+        st.info("District scores not available for operational indicators.")
+
+    st.markdown("---")
+
+    # ------------------------------------------------
+    # 🧭 NATIONAL RISK & OPPORTUNITY INSIGHTS
+    # ------------------------------------------------
+    st.markdown("## ⚖️ National Risk & Opportunity Insights")
+
+    if district_df is not None and not district_df.empty:
+        nat_risk = district_df["risk_score"].mean()
+        nat_opp = district_df["opp_score"].mean()
+
+        top_risk = (
+            district_df.sort_values("risk_score", ascending=False)
+            .head(3)["district"]
+            .tolist()
+        )
+        top_opp = (
+            district_df.sort_values("opp_score", ascending=False)
+            .head(3)["district"]
+            .tolist()
+        )
+
+        insights_md = f"""
+- **Average national risk score:** `{nat_risk:.2f}`
+- **Average national opportunity score:** `{nat_opp:.2f}`
+- **Top risk districts right now:** {", ".join(top_risk) if top_risk else "N/A"}
+- **Best opportunity districts:** {", ".join(top_opp) if top_opp else "N/A"}
+"""
+        st.markdown(insights_md)
+
+    # ------------------------------------------------
     # DONUT CHART – EVENT CATEGORY
     # ------------------------------------------------
     st.markdown("### 🧩 Breakdown by Event Category")
@@ -255,9 +465,7 @@ with tab1:
     news_df = news_df[news_df["published_parsed"] >= cutoff]
 
     # Latest 20 news items
-    critical = news_df.sort_values(
-        "published_parsed", ascending=False
-    ).head(20)
+    critical = news_df.sort_values("published_parsed", ascending=False).head(20)
 
     if len(critical) == 0:
         st.info("No recent news available.")
@@ -351,8 +559,14 @@ with tab2:
     industries = []
     risk_values = []
 
-    skip_fields = {"district", "risk_score", "opp_score", 
-                   "risk_level", "opp_level", "event_count"}
+    skip_fields = {
+        "district",
+        "risk_score",
+        "opp_score",
+        "risk_level",
+        "opp_level",
+        "event_count",
+    }
 
     for key, value in row.items():
         if key in skip_fields:
@@ -365,10 +579,7 @@ with tab2:
     industries.insert(0, "Overall District Risk")
     risk_values.insert(0, row.get("risk_score", 0))
 
-    risk_df = pd.DataFrame({
-        "Category": industries,
-        "Risk Score": risk_values
-    })
+    risk_df = pd.DataFrame({"Category": industries, "Risk Score": risk_values})
 
     fig_risk = px.bar(
         risk_df,
@@ -378,7 +589,7 @@ with tab2:
         range_y=[0, 1],
         title="Risk Score Breakdown",
         color="Risk Score",
-        color_continuous_scale=["green", "yellow", "red"]
+        color_continuous_scale=["green", "yellow", "red"],
     )
 
     fig_risk.update_layout(xaxis_title="", yaxis_title="Risk Score")
@@ -405,10 +616,7 @@ with tab2:
     industries2.insert(0, "Overall District Opportunity")
     opp_values.insert(0, row.get("opp_score", 0))
 
-    opp_df = pd.DataFrame({
-        "Category": industries2,
-        "Opportunity Score": opp_values
-    })
+    opp_df = pd.DataFrame({"Category": industries2, "Opportunity Score": opp_values})
 
     fig_opp = px.bar(
         opp_df,
@@ -418,7 +626,7 @@ with tab2:
         range_y=[0, 1],
         title="Opportunity Score Breakdown",
         color="Opportunity Score",
-        color_continuous_scale=["red", "yellow", "green"]
+        color_continuous_scale=["red", "yellow", "green"],
     )
 
     fig_opp.update_layout(xaxis_title="", yaxis_title="Opportunity Score")
@@ -449,25 +657,195 @@ with tab2:
 
     st.markdown(summary)
 
-
+# ----------------------------------------------------
+# =======================
+#        TAB 3
+# =======================
+# ----------------------------------------------------
 with tab3:
-    st.title("🏭 Industry Insights")
-    st.info("➡ Industry-specific analysis for Sri Lanka. (Coming next)")
+    st.title("🏭 Industry Insights — District Comparison")
 
-# ----------------------------------------------------
-# =======================
-#        TAB 4
-# =======================
-# ----------------------------------------------------
-with tab4:
-    st.title("📰 Event Explorer")
-    st.info("➡ A searchable filterable event explorer. (Coming next)")
+    if district_df is None or district_df.empty:
+        st.warning("District score data not available.")
+        st.stop()
 
-# ----------------------------------------------------
-# =======================
-#        TAB 5
-# =======================
-# ----------------------------------------------------
-with tab5:
-    st.title("🎯 Recommendations Center")
-    st.info("➡ AI-generated recommendations for government, industries, and public. (Coming next)")
+    # -----------------------------------------
+    # PICK TWO DISTRICTS FOR COMPARISON
+    # -----------------------------------------
+    colA, colB = st.columns(2)
+    with colA:
+        districtA = st.selectbox(
+            "Select District A", district_df["district"].tolist(), key="distA"
+        )
+    with colB:
+        districtB = st.selectbox(
+            "Select District B", district_df["district"].tolist(), key="distB"
+        )
+
+    rowA = district_df[district_df["district"] == districtA].iloc[0].to_dict()
+    rowB = district_df[district_df["district"] == districtB].iloc[0].to_dict()
+
+    # -----------------------------------------
+    # EXTRACT INDUSTRY DATA
+    # -----------------------------------------
+    indA = extract_industries_from_row(rowA)
+    indB = extract_industries_from_row(rowB)
+
+    # Add an impact column (your formula)
+    indA["impact"] = (indA["risk_score"] * -1 + indA["opp_score"]) / 2
+    indB["impact"] = (indB["risk_score"] * -1 + indB["opp_score"]) / 2
+
+    # -----------------------------------------
+    # SIDE-BY-SIDE INDUSTRY TABLE
+    # -----------------------------------------
+    st.subheader("📋 Side-by-Side Industry Comparison")
+
+    # SAFE MERGE (Fix duplicate suffix issue)
+    if districtA == districtB:
+        districtB_suffix = districtB + "_2"
+    else:
+        districtB_suffix = districtB
+
+    merged = indA.merge(
+        indB,
+        on="industry",
+        suffixes=(f"_{districtA}", f"_{districtB_suffix}"),
+    )
+
+    st.dataframe(merged, use_container_width=True)
+
+    st.markdown("---")
+
+    # -----------------------------------------
+    # IMPACT SCORE CHARTS (RISK + OPPORTUNITY)
+    # -----------------------------------------
+    st.subheader("📊 Impact Score Comparison")
+
+    col1, col2 = st.columns(2)
+
+    # ---- District A Charts ----
+    with col1:
+        st.markdown(f"### {districtA} — Industry Scores")
+
+        figA_risk = px.bar(
+            indA,
+            x="industry",
+            y="risk_score",
+            title=f"{districtA} — Risk Scores",
+            text_auto=True,
+            color="risk_score",
+        )
+        st.plotly_chart(
+            figA_risk,
+            use_container_width=True,
+            key=f"{districtA}_risk_chart_A",
+        )
+
+        figA_opp = px.bar(
+            indA,
+            x="industry",
+            y="opp_score",
+            title=f"{districtA} — Opportunity Scores",
+            text_auto=True,
+            color="opp_score",
+        )
+        st.plotly_chart(
+            figA_opp,
+            use_container_width=True,
+            key=f"{districtA}_opp_chart_A",
+        )
+
+    # ---- District B Charts ----
+    with col2:
+        st.markdown(f"### {districtB} — Industry Scores")
+
+        figB_risk = px.bar(
+            indB,
+            x="industry",
+            y="risk_score",
+            title=f"{districtB} — Risk Scores",
+            text_auto=True,
+            color="risk_score",
+        )
+        st.plotly_chart(
+            figB_risk,
+            use_container_width=True,
+            key=f"{districtB}_risk_chart_B",
+        )
+
+        figB_opp = px.bar(
+            indB,
+            x="industry",
+            y="opp_score",
+            title=f"{districtB} — Opportunity Scores",
+            text_auto=True,
+            color="opp_score",
+        )
+        st.plotly_chart(
+            figB_opp,
+            use_container_width=True,
+            key=f"{districtB}_opp_chart_B",
+        )
+
+    st.markdown("---")
+
+    # -----------------------------------------
+    # INDUSTRY WATCHLIST
+    # -----------------------------------------
+    st.subheader("🚨 Industry Watchlist")
+
+    colW1, colW2 = st.columns(2)
+
+    def render_watchlist(df, title):
+        st.markdown(f"### {title}")
+        df2 = df.copy()
+
+        # Add colored label
+        df2["Risk Level"] = df2["risk_level"].apply(
+            lambda lvl: "🟢 Low"
+            if lvl == "Low"
+            else ("🟠 Medium" if lvl == "Medium" else "🔴 High")
+        )
+
+        st.dataframe(
+            df2[["industry", "risk_score", "Risk Level"]],
+            use_container_width=True,
+        )
+
+    with colW1:
+        render_watchlist(indA, districtA)
+
+    with colW2:
+        render_watchlist(indB, districtB)
+
+    st.markdown("---")
+
+    # -----------------------------------------
+    # SMART AI SUMMARY (READABLE, SIMPLE)
+    # -----------------------------------------
+    def generate_summary(ind, district):
+        worst = ind.sort_values("risk_score", ascending=False).head(1)
+        best = ind.sort_values("opp_score", ascending=False).head(1)
+
+        w_ind = worst.iloc[0]["industry"]
+        w_score = worst.iloc[0]["risk_score"]
+
+        b_ind = best.iloc[0]["industry"]
+        b_score = best.iloc[0]["opp_score"]
+
+        return (
+            f"**{district} Summary:**\n"
+            f"- Highest risk observed in **{w_ind}** (risk score {w_score:.2f}).\n"
+            f"- Strongest opportunity appears in **{b_ind}** (opp score {b_score:.2f}).\n"
+            f"- Overall industry environment shows balanced risk & opportunity distribution.\n"
+        )
+
+    st.subheader("🧠 AI Insight Summary")
+
+    s1, s2 = st.columns(2)
+    with s1:
+        st.markdown(generate_summary(indA, districtA))
+
+    with s2:
+        st.markdown(generate_summary(indB, districtB))
+
