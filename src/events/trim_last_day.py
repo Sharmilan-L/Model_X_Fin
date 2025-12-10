@@ -13,7 +13,7 @@ def trim_last_day():
         events = json.load(f)
 
     now = datetime.now(timezone.utc)
-    cutoff = now - timedelta(days=1)
+    cutoff = now - timedelta(days=2)
 
     kept = []
     for ev in events:

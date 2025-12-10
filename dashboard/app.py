@@ -1,658 +1,473 @@
-# dashboard/app.py
-
-import json
-from pathlib import Path
-from datetime import datetime
-
 import streamlit as st
+import json
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime
 import pydeck as pdk
+import numpy as np
+from pathlib import Path
+from textwrap import dedent
+import re
 
-# Optional auto-refresh (every 5 min)
-try:
-    from streamlit_autorefresh import st_autorefresh
-    st_autorefresh(interval=300000, key="autoRefresh")  # 300,000 ms = 5 minutes
-except Exception:
-    pass
+# ----------------------------------------------------
+# Helpers
+# ----------------------------------------------------
+def clean_html(text: str) -> str:
+    """Remove HTML tags from summaries."""
+    if not isinstance(text, str):
+        return ""
+    clean = re.compile("<.*?>")
+    return re.sub(clean, "", text).strip()
 
-# Try to import your model configs for impact calculation
-try:
-    from src.industry.sensitivity import SENSITIVITY_MATRIX, INDUSTRIES
-    from src.industry.footprint import INDUSTRY_REGIONS, district_to_province
-except Exception:
-    SENSITIVITY_MATRIX = {}
-    INDUSTRIES = []
-    INDUSTRY_REGIONS = {}
 
-    def district_to_province(d):
+st.set_page_config(page_title="Sri Lanka Dashboard", layout="wide")
+
+EVENTS_FILE = "data/processed/events.json"
+DISTRICT_FILE = "data/processed/district_scores.json"
+
+# ----------------------------------------------------
+# Load Data
+# ----------------------------------------------------
+def load_events() -> pd.DataFrame:
+    with open(EVENTS_FILE, "r", encoding="utf-8") as f:
+        events = json.load(f)
+    return pd.DataFrame(events)
+
+
+def load_district_scores() -> pd.DataFrame | None:
+    path = Path(DISTRICT_FILE)
+    if not path.exists():
         return None
 
-# --------------------------------------------------------------------
-# DISTRICT → COORDINATES (approximate centroids for map)
-# --------------------------------------------------------------------
-DISTRICT_COORDS = {
-    # Western
-    "Colombo": (6.9271, 79.8612),
-    "Gampaha": (7.0873, 79.9994),
-    "Kalutara": (6.5854, 80.1010),
-    # Central
-    "Kandy": (7.2906, 80.6337),
-    "Matale": (7.4675, 80.6234),
-    "Nuwara Eliya": (6.9497, 80.7891),
-    # Southern
-    "Galle": (6.0535, 80.2210),
-    "Matara": (5.9485, 80.5350),
-    "Hambantota": (6.1246, 81.1185),
-    # Northern
-    "Jaffna": (9.6615, 80.0255),
-    "Kilinochchi": (9.3966, 80.3982),
-    "Mannar": (8.9806, 79.9046),
-    "Vavuniya": (8.7500, 80.5000),
-    "Mullaitivu": (9.2671, 80.8128),
-    # Eastern
-    "Batticaloa": (7.7170, 81.7000),
-    "Trincomalee": (8.5711, 81.2335),
-    "Ampara": (7.3000, 81.6667),
-    # North Western
-    "Kurunegala": (7.4863, 80.3647),
-    "Puttalam": (8.0362, 79.8283),
-    # North Central
-    "Anuradhapura": (8.3114, 80.4037),
-    "Polonnaruwa": (7.9396, 81.0007),
-    # Uva
-    "Badulla": (6.9934, 81.0550),
-    "Monaragala": (6.8726, 81.3450),
-    # Sabaragamuwa
-    "Ratnapura": (6.7055, 80.3847),
-    "Kegalle": (7.2513, 80.3464),
-}
+    with open(path, "r", encoding="utf-8") as f:
+        raw = json.load(f)
 
-# --------------------------------------------------------------------
-# STREAMLIT CONFIG & THEME
-# --------------------------------------------------------------------
-st.set_page_config(
-    page_title="Sri Lanka Industry Risk Intelligence",
-    page_icon="🌙",
-    layout="wide",
+    # handle dict {"Colombo": {...}, ...}
+    if isinstance(raw, dict):
+        rows = []
+        for name, info in raw.items():
+            row = {"district": name}
+            row.update(info)
+            rows.append(row)
+        return pd.DataFrame(rows)
+
+    # already list of dicts
+    return pd.DataFrame(raw)
+
+
+df = load_events()
+district_df = load_district_scores()
+
+# ----------------------------------------------------
+# CREATE TABS
+# ----------------------------------------------------
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["🌍 National Overview", "📍 District Insights",
+     "🏭 Industry Insights", "📰 Event Explorer", "🎯 Recommendations"]
 )
 
-# Dark theme CSS
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #0E1117;
-        color: #E0E0E0;
-    }
-    .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
-    }
-    .metric-card {
-        background-color: #161B22;
-        border-radius: 10px;
-        padding: 0.8rem 1rem;
-        border: 1px solid #21262D;
-        box-shadow: 0 0 10px rgba(0,0,0,0.35);
-    }
-    .metric-title {
-        font-size: 1.05rem;
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-        color: #FFFFFF;
-    }
-    .metric-subtitle {
-        font-size: 0.8rem;
-        color: #9DA5B4;
-        margin-bottom: 0.35rem;
-    }
-    .badge {
-        display: inline-block;
-        padding: 0.15rem 0.55rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #FFF;
-        margin-right: 0.35rem;
-    }
-    .badge-risk-high { background: #FF4C4C; }
-    .badge-risk-medium { background: #FF9F1C; }
-    .badge-risk-low { background: #2ECC71; }
+# ----------------------------------------------------
+# =======================
+#        TAB 1
+# =======================
+# ----------------------------------------------------
+with tab1:
+    st.title("🇱🇰 Sri Lanka — National Situation Overview")
 
-    .badge-opp-high { background: #00C853; }
-    .badge-opp-medium { background: #F1C40F; color: #111; }
-    .badge-opp-low { background: #C0392B; }
+    last_time = df["timestamp"].max()
+    st.caption(f"Last Updated: **{last_time}**")
+    st.markdown("---")
 
-    .driver-text {
-        font-size: 0.8rem;
-        color: #9DA5B4;
-        margin-top: 0.35rem;
-    }
-    .section-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-        color: #FFFFFF;
-    }
-    .section-subtitle {
-        font-size: 0.85rem;
-        color: #9DA5B4;
-        margin-bottom: 0.8rem;
-    }
-    .event-row {
-        padding: 0.45rem 0;
-        border-bottom: 1px solid #21262D;
-    }
-    .event-title {
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #FFFFFF;
-    }
-    .event-meta {
-        font-size: 0.78rem;
-        color: #9DA5B4;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+    # ------------------------------------------------
+    # KPI CARDS
+    # ------------------------------------------------
+    col1, col2, col3, col4 = st.columns(4)
 
-# --------------------------------------------------------------------
-# DATA LOADING HELPERS
-# --------------------------------------------------------------------
-@st.cache_data(show_spinner=False)
-def load_industry_scores(path: str = "data/processed/industry_scores.json"):
-    p = Path(path)
-    if not p.exists():
-        return {}
-    with p.open("r", encoding="utf-8") as f:
-        return json.load(f)
+    total_events = len(df)
+    severe_events = len(df[df["severity"] > 0.6])
+    affected_districts = df["districts"].explode().nunique()
+    active_categories = df["event_type"].nunique()
 
+    col1.metric("📡 Total Events (24h)", total_events)
+    col2.metric("🔥 Severe Events", severe_events)
+    col3.metric("📍 Districts Affected", affected_districts)
+    col4.metric("🏷️ Categories Active", active_categories)
 
-@st.cache_data(show_spinner=False)
-def load_events(path: str = "data/processed/events.json"):
-    p = Path(path)
-    if not p.exists():
-        return []
-    with p.open("r", encoding="utf-8") as f:
-        return json.load(f)
+    # ------------------------------------------------
+    # RISK MAP
+    # ------------------------------------------------
+    st.markdown("### 🗺️ District Risk Heatmap (From Model Scores)")
 
+    if district_df is not None and not district_df.empty:
+        risk_df = district_df.copy()
 
-def get_file_mtime(path: str):
-    p = Path(path)
-    if not p.exists():
-        return None
-    ts = p.stat().st_mtime
-    return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+        # Ensure required columns exist
+        for col in ["risk_score", "opp_score", "event_count"]:
+            if col not in risk_df:
+                risk_df[col] = 0
 
+        risk_df["risk_score"] = pd.to_numeric(
+            risk_df["risk_score"], errors="coerce"
+        ).fillna(0.0)
 
-# --------------------------------------------------------------------
-# STYLING HELPERS
-# --------------------------------------------------------------------
-def risk_badge(level: str) -> str:
-    level = (level or "").lower()
-    if level == "high":
-        cls = "badge-risk-high"; label = "HIGH"
-    elif level == "medium":
-        cls = "badge-risk-medium"; label = "MEDIUM"
+        district_coords = {
+            "Colombo": (6.9271, 79.8612),
+            "Gampaha": (7.0897, 79.9921),
+            "Kalutara": (6.5770, 79.9629),
+            "Kandy": (7.2906, 80.6337),
+            "Matale": (7.4675, 80.6234),
+            "Nuwara Eliya": (6.9497, 80.7891),
+            "Galle": (6.0535, 80.2210),
+            "Matara": (5.9549, 80.5540),
+            "Hambantota": (6.1240, 81.1185),
+            "Jaffna": (9.6615, 80.0255),
+            "Kilinochchi": (9.3961, 80.3980),
+            "Mannar": (8.9809, 79.9047),
+            "Vavuniya": (8.7542, 80.4973),
+            "Mullaitivu": (9.2671, 80.8140),
+            "Batticaloa": (7.7300, 81.6924),
+            "Trincomalee": (8.5874, 81.2152),
+            "Ampara": (7.2910, 81.6724),
+            "Badulla": (6.9896, 81.0560),
+            "Monaragala": (6.8720, 81.3500),
+            "Kurunegala": (7.4863, 80.3647),
+            "Puttalam": (8.0408, 79.8393),
+            "Anuradhapura": (8.3114, 80.4037),
+            "Polonnaruwa": (7.9396, 81.0036),
+            "Ratnapura": (6.7056, 80.3847),
+            "Kegalle": (7.2513, 80.3464),
+        }
+
+        risk_df["lat"] = risk_df["district"].apply(
+            lambda d: district_coords.get(d, (0, 0))[0]
+        )
+        risk_df["lon"] = risk_df["district"].apply(
+            lambda d: district_coords.get(d, (0, 0))[1]
+        )
+
+        def risk_color(score: float) -> list[int]:
+            if score >= 0.75:
+                return [255, 0, 0]
+            if score >= 0.55:
+                return [255, 165, 0]
+            if score >= 0.35:
+                return [255, 255, 0]
+            if score >= 0.20:
+                return [144, 238, 144]
+            return [0, 128, 0]
+
+        risk_df["color"] = risk_df["risk_score"].apply(risk_color)
+        risk_df["radius"] = risk_df["risk_score"] * 15000 + 3000
+
+        layer = pdk.Layer(
+            "ScatterplotLayer",
+            data=risk_df,
+            get_position="[lon, lat]",
+            get_radius="radius",
+            get_fill_color="color",
+            pickable=True,
+        )
+
+        view_state = pdk.ViewState(
+            latitude=7.8731, longitude=80.7718, zoom=6.8
+        )
+
+        tooltip = {
+            "html": (
+                "<b>{district}</b><br/>"
+                "Risk: {risk_score}<br/>"
+                "Opportunity: {opp_score}<br/>"
+                "Events: {event_count}"
+            ),
+            "style": {"backgroundColor": "black", "color": "white"},
+        }
+
+        st.pydeck_chart(
+            pdk.Deck(
+                layers=[layer],
+                initial_view_state=view_state,
+                tooltip=tooltip,
+            ),
+            key="district_risk_map",
+        )
+
+    st.markdown("---")
+
+    # ------------------------------------------------
+    # DONUT CHART – EVENT CATEGORY
+    # ------------------------------------------------
+    st.markdown("### 🧩 Breakdown by Event Category")
+
+    category_count = df["event_type"].value_counts()
+
+    fig_cat = px.pie(
+        values=category_count.values,
+        names=category_count.index,
+        hole=0.45,
+    )
+    st.plotly_chart(fig_cat, use_container_width=True)
+
+    # ------------------------------------------------
+    # BAR – EVENT SOURCE DISTRIBUTION
+    # ------------------------------------------------
+    st.markdown("### 📊 Event Source Distribution")
+
+    source_count = df["source_type"].value_counts().reset_index()
+    source_count.columns = ["source_type", "count"]
+
+    fig_src = px.bar(
+        source_count,
+        x="source_type",
+        y="count",
+        text="count",
+        title="Events by Source Type",
+        color="source_type",
+    )
+
+    fig_src.update_layout(
+        xaxis_title="Source Type",
+        yaxis_title="Number of Events",
+        showlegend=False,
+    )
+
+    st.plotly_chart(fig_src, use_container_width=True, key="event_source_bar")
+
+    # ------------------------------------------------
+    # TOP NEWS ALERTS (CARDS)
+    # ------------------------------------------------
+    st.markdown("### 📰 Top News Alerts")
+
+    # Filter only news-like sources
+    news_df = df[df["source_type"].str.contains("news", case=False, na=False)].copy()
+
+    # Prefer 'published' if present, else fallback to 'timestamp'
+    def get_publish_time(row):
+        return row.get("published") or row.get("timestamp")
+
+    news_df["published_final"] = news_df.apply(get_publish_time, axis=1)
+    news_df["published_parsed"] = pd.to_datetime(
+        news_df["published_final"], errors="coerce", utc=True
+    )
+
+    # Keep only last 48 hours
+    cutoff = pd.Timestamp.utcnow() - pd.Timedelta(hours=48)
+    news_df = news_df[news_df["published_parsed"] >= cutoff]
+
+    # Latest 20 news items
+    critical = news_df.sort_values(
+        "published_parsed", ascending=False
+    ).head(20)
+
+    if len(critical) == 0:
+        st.info("No recent news available.")
     else:
-        cls = "badge-risk-low"; label = "LOW"
-    return f'<span class="badge {cls}">Risk: {label}</span>'
+        for _, row in critical.iterrows():
+            # Human readable time
+            try:
+                ts = pd.to_datetime(row["published_final"], utc=True)
+                diff = pd.Timestamp.utcnow() - ts
+                hours = int(diff.total_seconds() // 3600)
 
+                if hours < 1:
+                    time_label = "Just now"
+                elif hours < 24:
+                    time_label = f"{hours}h ago"
+                else:
+                    time_label = f"{hours // 24}d ago"
+            except Exception:
+                time_label = "Unknown"
 
-def opp_badge(level: str) -> str:
-    level = (level or "").lower()
-    if level == "high":
-        cls = "badge-opp-high"; label = "HIGH"
-    elif level == "medium":
-        cls = "badge-opp-medium"; label = "MEDIUM"
-    else:
-        cls = "badge-opp-low"; label = "LOW"
-    return f'<span class="badge {cls}">Opportunity: {label}</span>'
+            # Clean + trim summary
+            summary_raw = row.get("summary", "")
+            summary_clean = clean_html(summary_raw)
+            if len(summary_clean) > 160:
+                summary_clean = summary_clean[:160] + "..."
 
+            url = row.get("url", "#")
 
-def severity_icon(sev: float) -> str:
-    if sev is None:
-        return "🟢"
-    if sev >= 0.7:
-        return "🔴"
-    if sev >= 0.4:
-        return "🟠"
-    if sev >= 0.2:
-        return "🟡"
-    return "🟢"
+            card_html = f"""
+<div style="border:1px solid #333;
+            border-radius:8px;
+            padding:15px;
+            margin:14px 0;
+            background:rgba(255,255,255,0.06);">
+  <h4 style="color:white; margin:0 0 8px 0;">
+    📰 {row['title']}
+  </h4>
 
+  <p style="color:#aaa; margin:0 0 8px 0;">
+    <b>Severity:</b> {row['severity']:.2f} &nbsp;|&nbsp;
+    <b>Published:</b> {time_label}
+  </p>
 
-# --------------------------------------------------------------------
-# IMPACT CALCULATION HELPERS (mirrors score.py logic)
-# --------------------------------------------------------------------
-def location_factor(industry: str, event_districts):
-    if not event_districts or event_districts == ["NATIONAL"]:
-        return 0.6
-    industry_provinces = INDUSTRY_REGIONS.get(industry, [])
-    max_factor = 0.1
-    for district in event_districts:
-        province = district_to_province(district)
-        if not province:
+  <p style="color:#ddd; font-size:0.9em; margin:0 0 10px 0;">
+    {summary_clean}
+  </p>
+
+  <a href="{url}" target="_blank"
+     style="color:#4da6ff; text-decoration:none; font-size:0.9em;">
+    🔗 Read full article
+  </a>
+</div>
+"""
+            card_html = dedent(card_html)
+            st.markdown(card_html, unsafe_allow_html=True)
+
+# ----------------------------------------------------
+# =======================
+#        TAB 2
+# =======================
+# ----------------------------------------------------
+with tab2:
+    st.title("📍 District Insights")
+
+    if district_df is None or district_df.empty:
+        st.warning("District score data not available.")
+        st.stop()
+
+    # ---- PICK DISTRICT ----
+    district_names = district_df["district"].tolist()
+    selected = st.selectbox("Select a District", district_names)
+
+    # Extract selected row as dict
+    row = district_df[district_df["district"] == selected].iloc[0].to_dict()
+
+    # ---- HIGH LEVEL SUMMARY ----
+    st.subheader(f"📊 Overview — {selected}")
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Risk Score", f"{row.get('risk_score', 0):.2f}")
+    c2.metric("Opportunity Score", f"{row.get('opp_score', 0):.2f}")
+    c3.metric("Event Count", row.get("event_count", 0))
+
+    st.markdown("---")
+
+    # ----------------------------------------------------
+    # 📉 RISK BAR CHART
+    # ----------------------------------------------------
+    st.subheader("📉 Risk Scores by Industry")
+
+    industries = []
+    risk_values = []
+
+    skip_fields = {"district", "risk_score", "opp_score", 
+                   "risk_level", "opp_level", "event_count"}
+
+    for key, value in row.items():
+        if key in skip_fields:
             continue
-        if province in industry_provinces:
-            max_factor = max(max_factor, 1.0)
-        else:
-            max_factor = max(max_factor, 0.3)
-    return max_factor
+        if isinstance(value, dict) and "risk_score" in value:
+            industries.append(key)
+            risk_values.append(value["risk_score"])
 
+    # Add overall district risk as first bar
+    industries.insert(0, "Overall District Risk")
+    risk_values.insert(0, row.get("risk_score", 0))
 
-def event_impact_for_industry(event, industry: str):
-    """Approximate per-event impact for selected industry (for explanation only)."""
-    if not SENSITIVITY_MATRIX:
-        return None
+    risk_df = pd.DataFrame({
+        "Category": industries,
+        "Risk Score": risk_values
+    })
 
-    etype = event.get("event_type")
-    sev = event.get("severity", 0) or 0
-    districts = event.get("districts", ["NATIONAL"])
-
-    if not etype or etype not in SENSITIVITY_MATRIX:
-        return None
-
-    sens = SENSITIVITY_MATRIX[etype].get(industry)
-    if sens is None:
-        return None
-
-    loc_factor = location_factor(industry, districts)
-    impact = (sev * sens * loc_factor) / 2
-
-    # exposure corrections (same logic as score.py)
-    if industry == "IT":
-        impact *= 0.3
-    if industry == "Banking":
-        impact *= 0.5
-    if industry == "Energy":
-        impact *= 0.7
-    if industry == "Tourism":
-        impact *= 0.8
-    if industry == "Agriculture":
-        impact *= 1.2
-    if industry == "Water":
-        impact *= 1.2
-    if industry == "Retail":
-        impact *= 0.9
-
-    return impact
-
-
-# --------------------------------------------------------------------
-# HEADER
-# --------------------------------------------------------------------
-def render_header():
-    col1, col2 = st.columns([0.7, 0.3])
-    with col1:
-        st.markdown(
-            "<h2 style='color:white;'>🌙 Sri Lanka Industry Risk Intelligence Dashboard</h2>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            "<p style='color:#9DA5B4; font-size:0.9rem;'>Real-time socio-economic and operational signals interpreted for Sri Lankan industries.</p>",
-            unsafe_allow_html=True,
-        )
-    with col2:
-        last_mtime = get_file_mtime("data/processed/industry_scores.json")
-        st.markdown(
-            f"""
-            <div style="text-align:right; font-size:0.8rem; color:#9DA5B4;">
-                Auto-refresh: every 5 minutes<br/>
-                Last updated: <b>{last_mtime or "N/A"}</b>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    st.markdown("<hr style='border-color:#21262D;'/>", unsafe_allow_html=True)
-
-
-# --------------------------------------------------------------------
-# TAB 1: OVERVIEW
-# --------------------------------------------------------------------
-def overview_tab(industry_scores):
-    st.markdown(
-        "<div class='section-title'>📊 Industry Risk & Opportunity Overview</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='section-subtitle'>Snapshot of current risk and opportunity across key Sri Lankan industries.</div>",
-        unsafe_allow_html=True,
+    fig_risk = px.bar(
+        risk_df,
+        x="Category",
+        y="Risk Score",
+        text="Risk Score",
+        range_y=[0, 1],
+        title="Risk Score Breakdown",
+        color="Risk Score",
+        color_continuous_scale=["green", "yellow", "red"]
     )
 
-    if not industry_scores:
-        st.warning("No industry scores found. Run your scoring pipeline first.")
-        return
+    fig_risk.update_layout(xaxis_title="", yaxis_title="Risk Score")
+    st.plotly_chart(fig_risk, use_container_width=True)
 
-    rows = []
-    for ind, data in industry_scores.items():
-        if ind == "last_updated":
+    st.markdown("---")
+
+    # ----------------------------------------------------
+    # 📈 OPPORTUNITY BAR CHART
+    # ----------------------------------------------------
+    st.subheader("📈 Opportunity Scores by Industry")
+
+    industries2 = []
+    opp_values = []
+
+    for key, value in row.items():
+        if key in skip_fields:
             continue
-        rows.append({
-            "Industry": ind,
-            "Risk Score": round(float(data.get("risk_score", 0)), 2),
-            "Risk Level": data.get("risk_level", "Low"),
-            "Opportunity Score": round(float(data.get("opp_score", 0)), 2),
-            "Opportunity Level": data.get("opp_level", "Low"),
-            "Top Driver": (data.get("top_drivers") or ["-"])[0],
-        })
+        if isinstance(value, dict) and "opp_score" in value:
+            industries2.append(key)
+            opp_values.append(value["opp_score"])
 
-    df = pd.DataFrame(rows)
-    st.dataframe(df, use_container_width=True)
+    # Add district-level opportunity score
+    industries2.insert(0, "Overall District Opportunity")
+    opp_values.insert(0, row.get("opp_score", 0))
 
+    opp_df = pd.DataFrame({
+        "Category": industries2,
+        "Opportunity Score": opp_values
+    })
 
-# --------------------------------------------------------------------
-# TAB 2: INDUSTRY DETAILS
-# --------------------------------------------------------------------
-def industry_details_tab(industry_scores, events):
-    if not industry_scores:
-        st.warning("No industry scores found.")
-        return
-
-    industries = [k for k in industry_scores.keys() if k != "last_updated"]
-    if not industries:
-        st.warning("No industries in scores file.")
-        return
-
-    selected = st.selectbox("Select industry", industries)
-
-    data = industry_scores[selected]
-
-    st.markdown(
-        f"<div class='section-title'>🏭 Industry: {selected}</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='section-subtitle'>Drill-down of how current events translate into risk and opportunity for this industry.</div>",
-        unsafe_allow_html=True,
+    fig_opp = px.bar(
+        opp_df,
+        x="Category",
+        y="Opportunity Score",
+        text="Opportunity Score",
+        range_y=[0, 1],
+        title="Opportunity Score Breakdown",
+        color="Opportunity Score",
+        color_continuous_scale=["red", "yellow", "green"]
     )
 
-    risk_score = float(data.get("risk_score", 0) or 0)
-    opp_score = float(data.get("opp_score", 0) or 0)
-    risk_level = data.get("risk_level", "Low")
-    opp_level = data.get("opp_level", "Low")
-    drivers = data.get("top_drivers") or []
+    fig_opp.update_layout(xaxis_title="", yaxis_title="Opportunity Score")
+    st.plotly_chart(fig_opp, use_container_width=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
-        st.metric("Risk Score", f"{risk_score:.2f}")
-        st.markdown(risk_badge(risk_level), unsafe_allow_html=True)
-    with c2:
-        st.metric("Opportunity Score", f"{opp_score:.2f}")
-        st.markdown(opp_badge(opp_level), unsafe_allow_html=True)
+    st.markdown("---")
 
-    st.markdown("<br/><div class='section-title'>⚠ Top Driver Events</div>", unsafe_allow_html=True)
-    if not drivers:
-        st.info("No driver events recorded for this industry.")
-    else:
-        for idx, title in enumerate(drivers, start=1):
-            st.markdown(
-                f"<div style='margin-bottom:0.3rem; font-size:0.9rem;'><b>{idx}️⃣ {title}</b></div>",
-                unsafe_allow_html=True,
-            )
+    # ----------------------------------------------------
+    # 🧠 AI SUMMARY
+    # ----------------------------------------------------
+    st.subheader("🧠 AI Summary")
 
-    st.markdown("<br/><div class='section-title'>📊 Event Impact Table</div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div class='section-subtitle'>Events are ordered by how strongly they are estimated to impact this industry (risk or opportunity).</div>",
-        unsafe_allow_html=True,
-    )
+    risk_score = row.get("risk_score", 0)
+    opp_score = row.get("opp_score", 0)
+    risk_level = row.get("risk_level", "Unknown")
+    opp_level = row.get("opp_level", "Unknown")
+    ev_count = row.get("event_count", 0)
 
-    impact_rows = []
-    for ev in events:
-        impact = event_impact_for_industry(ev, selected)
-        if impact is None:
-            continue
-        impact_rows.append({
-            "Event Title": ev.get("title", "")[:120],
-            "Type": ev.get("event_type", ""),
-            "Districts": ", ".join(ev.get("districts") or []),
-            "Severity": round(float(ev.get("severity", 0) or 0), 2),
-            "Impact": round(float(impact), 4),
-        })
+    summary = f"""
+### 📌 Summary for **{selected}**
 
-    if not impact_rows:
-        st.info("No events with computable impact for this industry yet.")
-    else:
-        impact_rows = sorted(impact_rows, key=lambda r: abs(r["Impact"]), reverse=True)
-        st.dataframe(pd.DataFrame(impact_rows), use_container_width=True)
+- **Risk Level:** {risk_level} ({risk_score:.2f})
+- **Opportunity Level:** {opp_level} ({opp_score:.2f})
+- **Events Analyzed:** {ev_count}
+
+{selected} currently shows a **{risk_level.lower()} risk profile**, while opportunity trends indicate **{opp_level.lower()} potential** for operations, investment, and socio-economic activity.
+"""
+
+    st.markdown(summary)
 
 
-# --------------------------------------------------------------------
-# TAB 3: EVENTS FEED
-# --------------------------------------------------------------------
-def events_tab(events):
-    st.markdown(
-        "<div class='section-title'>🔥 Live Event Feed</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='section-subtitle'>Newest classified events with severity and location, powering the industry risk model.</div>",
-        unsafe_allow_html=True,
-    )
+with tab3:
+    st.title("🏭 Industry Insights")
+    st.info("➡ Industry-specific analysis for Sri Lanka. (Coming next)")
 
-    if not events:
-        st.warning("No events found. Run your scrapers and classification pipeline.")
-        return
+# ----------------------------------------------------
+# =======================
+#        TAB 4
+# =======================
+# ----------------------------------------------------
+with tab4:
+    st.title("📰 Event Explorer")
+    st.info("➡ A searchable filterable event explorer. (Coming next)")
 
-    # sort by timestamp if present, else severity
-    def event_sort_key(e):
-        ts = e.get("timestamp") or ""
-        sev = float(e.get("severity", 0) or 0)
-        return (ts, sev)
-
-    # show most recent first
-    events_sorted = sorted(events, key=event_sort_key, reverse=True)
-
-    for ev in events_sorted[:200]:
-        title = ev.get("title", "Untitled event")
-        etype = ev.get("event_type", "Unknown")
-        sev = float(ev.get("severity", 0) or 0)
-        districts = ev.get("districts") or []
-        src = ev.get("source_type", "unknown")
-        ts = ev.get("timestamp", "")
-        icon = severity_icon(sev)
-
-        st.markdown("<div class='event-row'>", unsafe_allow_html=True)
-        st.markdown(
-            f"<div class='event-title'>{icon} [{sev:.2f}] {title}</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            f"<div class='event-meta'>"
-            f"Type: <b>{etype}</b> &nbsp;&nbsp; "
-            f"Districts: {', '.join(districts) or 'N/A'} &nbsp;&nbsp; "
-            f"Source: {src} &nbsp;&nbsp; "
-            f"Time: {ts or 'N/A'}"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-
-# --------------------------------------------------------------------
-# TAB 4: DYNAMIC EVENT–INDUSTRY IMPACT MATRIX
-# --------------------------------------------------------------------
-def matrix_tab(events):
-    st.markdown(
-        "<div class='section-title'>📐 Event → Industry Impact Matrix</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='section-subtitle'>Average estimated impact of each event type on each industry, based on recent events.</div>",
-        unsafe_allow_html=True,
-    )
-
-    if not events or not SENSITIVITY_MATRIX:
-        st.info("Need both events and sensitivity matrix to build matrix.")
-        return
-
-    if not INDUSTRIES:
-        # fallback: infer industries from sensitivity matrix keys
-        inferred_inds = set()
-        for et in SENSITIVITY_MATRIX.values():
-            inferred_inds.update(list(et.keys()))
-        industries = sorted(list(inferred_inds))
-    else:
-        industries = INDUSTRIES
-
-    # Collect impacts: (event_type, industry) -> list of impacts
-    impacts = {}
-    for ev in events:
-        etype = ev.get("event_type")
-        if not etype:
-            continue
-        for ind in industries:
-            imp = event_impact_for_industry(ev, ind)
-            if imp is None:
-                continue
-            impacts.setdefault((etype, ind), []).append(imp)
-
-    if not impacts:
-        st.info("No computable event impacts to show in matrix.")
-        return
-
-    # Build matrix
-    all_event_types = sorted({k[0] for k in impacts.keys()})
-    matrix = []
-    for et in all_event_types:
-        row = {"Event Type": et}
-        for ind in industries:
-            key = (et, ind)
-            vals = impacts.get(key)
-            if not vals:
-                row[ind] = ""
-            else:
-                avg = sum(vals) / len(vals)
-                row[ind] = round(avg, 3)
-        matrix.append(row)
-
-    df = pd.DataFrame(matrix)
-    st.dataframe(df, use_container_width=True)
-
-
-# --------------------------------------------------------------------
-# TAB 5: INTERACTIVE MAP
-# --------------------------------------------------------------------
-def map_tab(events):
-    st.markdown(
-        "<div class='section-title'>🗺 Sri Lanka Event Map</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div class='section-subtitle'>Geospatial view of recent events by district and severity.</div>",
-        unsafe_allow_html=True,
-    )
-
-    if not events:
-        st.warning("No events to display on the map.")
-        return
-
-    # Build dataframe for map
-    map_rows = []
-    for ev in events:
-        districts = ev.get("districts") or []
-        if not districts:
-            continue
-        # take first district for map point
-        d = districts[0]
-        coords = DISTRICT_COORDS.get(d)
-        if not coords:
-            continue
-        lat, lon = coords
-        sev = float(ev.get("severity", 0) or 0)
-        etype = ev.get("event_type", "Unknown")
-        title = ev.get("title", "")
-        map_rows.append(
-            {
-                "lat": lat,
-                "lon": lon,
-                "severity": sev,
-                "event_type": etype,
-                "title": title,
-                "district": d,
-            }
-        )
-
-    if not map_rows:
-        st.info("No events with known district coordinates to map.")
-        return
-
-    df_map = pd.DataFrame(map_rows)
-
-    # Color & radius based on severity
-    df_map["radius"] = df_map["severity"].apply(lambda s: 5000 + 30000 * s)
-
-    def sev_color(s):
-        # higher severity → more red
-        r = int(200 + 55 * s)
-        g = int(120 * (1 - s))
-        b = int(40 * (1 - s))
-        return [r, g, b, 160]
-
-    df_map["color"] = df_map["severity"].apply(sev_color)
-
-    midpoint = (df_map["lat"].mean(), df_map["lon"].mean())
-
-    layer = pdk.Layer(
-        "ScatterplotLayer",
-        data=df_map,
-        get_position="[lon, lat]",
-        get_radius="radius",
-        get_color="color",
-        pickable=True,
-    )
-
-    view_state = pdk.ViewState(
-        latitude=midpoint[0],
-        longitude=midpoint[1],
-        zoom=6.7,
-        pitch=0,
-    )
-
-    tool_tip = {
-        "html": "<b>{event_type}</b><br/>{title}<br/>District: {district}<br/>Severity: {severity}",
-        "style": {"backgroundColor": "rgba(22,27,34,0.9)", "color": "white"},
-    }
-
-    st.pydeck_chart(
-        pdk.Deck(
-            layers=[layer],
-            initial_view_state=view_state,
-            tooltip=tool_tip,
-            map_style="mapbox://styles/mapbox/dark-v10",
-        )
-    )
-
-
-# --------------------------------------------------------------------
-# MAIN
-# --------------------------------------------------------------------
-def main():
-    render_header()
-
-    industry_scores = load_industry_scores()
-    events = load_events()
-
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["Overview", "Industry Details", "Events", "Matrix", "Map"]
-    )
-
-    with tab1:
-        overview_tab(industry_scores)
-
-    with tab2:
-        industry_details_tab(industry_scores, events)
-
-    with tab3:
-        events_tab(events)
-
-    with tab4:
-        matrix_tab(events)
-
-    with tab5:
-        map_tab(events)
-
-
-if __name__ == "__main__":
-    main()
+# ----------------------------------------------------
+# =======================
+#        TAB 5
+# =======================
+# ----------------------------------------------------
+with tab5:
+    st.title("🎯 Recommendations Center")
+    st.info("➡ AI-generated recommendations for government, industries, and public. (Coming next)")

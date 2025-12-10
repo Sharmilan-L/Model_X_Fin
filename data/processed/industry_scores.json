@@ -5,20 +5,20 @@
     "risk_level": "High",
     "opp_level": "Low",
     "top_drivers": [
+      "How can Colombo’s recovery from Cyclone Ditwah be transformative? - The Sunday Times, Sri Lanka",
       "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
-      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
-      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu"
     ]
   },
   "FoodBeverage": {
-    "risk_score": 0.35,
+    "risk_score": 0.39,
     "opp_score": 0.85,
     "risk_level": "Medium",
     "opp_level": "High",
     "top_drivers": [
+      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
       "More than 60% of Asia and Pacific’s population lifted from water insecurity",
-      "How South Asia Can Adapt to Extreme Heat - Time Magazine",
-      "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+      "How South Asia Can Adapt to Extreme Heat - Time Magazine"
     ]
   },
   "Water": {
@@ -28,8 +28,8 @@
     "opp_level": "High",
     "top_drivers": [
       "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
-      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+      "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
+      "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua"
     ]
   },
   "Retail": {
@@ -39,8 +39,8 @@
     "opp_level": "Low",
     "top_drivers": [
       "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
-      "Sri Lanka issues fresh landslide warnings as death toll hits 607\nColombo, Sri Lanka - The New Indian Express",
-      "Motorcycle registrations dominate this year  – Commissioner General"
+      "Important Notice for patients on long-term treatments",
+      "Sri Lanka issues fresh landslide warnings as death toll hits 607\nColombo, Sri Lanka - The New Indian Express"
     ]
   },
   "Tourism": {
@@ -50,19 +50,19 @@
     "opp_level": "Low",
     "top_drivers": [
       "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
-      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+      "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
+      "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua"
     ]
   },
   "IT": {
-    "risk_score": 0.37,
-    "opp_score": 0.11,
+    "risk_score": 0.53,
+    "opp_score": 0.13,
     "risk_level": "Medium",
     "opp_level": "Low",
     "top_drivers": [
+      "How can Colombo’s recovery from Cyclone Ditwah be transformative? - The Sunday Times, Sri Lanka",
       "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
-      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
-      "India scales up cyclone relief efforts in Sri Lanka under Operation Sagar Bandhu - MorungExpress"
+      "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu"
     ]
   },
   "Agriculture": {
@@ -72,8 +72,8 @@
     "opp_level": "Low",
     "top_drivers": [
       "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
-      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-      "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+      "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
+      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
     ]
   },
   "Logistics": {
@@ -83,30 +83,30 @@
     "opp_level": "Low",
     "top_drivers": [
       "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
-      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+      "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
+      "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua"
     ]
   },
   "Energy": {
     "risk_score": 0.8,
-    "opp_score": 0.48,
+    "opp_score": 0.53,
     "risk_level": "High",
     "opp_level": "Medium",
     "top_drivers": [
+      "Cabraal and three others acquitted in Greek Bond Case",
       "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
-      "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-      "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka"
+      "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
     ]
   },
   "Banking": {
-    "risk_score": 0.62,
+    "risk_score": 0.8,
     "opp_score": 0.85,
     "risk_level": "High",
     "opp_level": "High",
     "top_drivers": [
+      "Cabraal and three others acquitted in Greek Bond Case",
       "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
-      "Monetary Policy Review - No. 6 of 2025",
-      "Monetary Policy Review - No. 5 of 2025"
+      "Monetary Policy Review - No. 6 of 2025"
     ]
   }
 }

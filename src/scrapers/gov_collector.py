@@ -104,10 +104,7 @@ GOV_SOURCES = [
      "type": "rss"},
 
     # Transport / Police / Parliament
-    {"name": "Sri Lanka Police",
-     "url": "https://www.police.lk/index.php?option=com_content&view=category&id=8&Itemid=105&format=feed&type=rss",
-     "type": "rss"},
-
+    
     {"name": "Parliament News",
      "url": "https://www.parliament.lk/en/news-feed",
      "type": "rss"},
@@ -137,7 +134,10 @@ def extract_rss(source):
                 "summary": summary.strip(),
                 "published": item.pubDate.text if item.pubDate else None,
                 "source": source["name"],
-                "fetched_at": datetime.now(timezone.utc).isoformat()
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+                "timestamp": (
+                item.pubDate.text if item.pubDate else datetime.now(timezone.utc).isoformat()
+    ),
             })
 
         return items
@@ -238,7 +238,8 @@ def extract_html(source):
                 "summary": summary,
                 "published": None,
                 "source": source["name"],
-                "fetched_at": datetime.now(timezone.utc).isoformat()
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             })
 
         return items

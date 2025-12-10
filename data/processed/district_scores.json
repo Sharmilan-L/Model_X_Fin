@@ -6,20 +6,20 @@
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
+        "How can Colombo’s recovery from Cyclone Ditwah be transformative? - The Sunday Times, Sri Lanka",
         "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
-        "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
+        "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu"
       ]
     },
     "FoodBeverage": {
-      "risk_score": 0.47,
-      "opp_score": 0.45,
+      "risk_score": 0.55,
+      "opp_score": 0.84,
       "risk_level": "Medium",
-      "opp_level": "Medium",
+      "opp_level": "High",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "How can Colombo’s recovery from Cyclone Ditwah be transformative? - The Sunday Times, Sri Lanka",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times"
       ]
     },
     "Water": {
@@ -28,9 +28,9 @@
       "risk_level": "Low",
       "opp_level": "High",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times",
+        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
       ]
     },
     "Retail": {
@@ -40,8 +40,8 @@
       "opp_level": "Low",
       "top_drivers": [
         "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
-        "Sri Lanka issues fresh landslide warnings as death toll hits 607\nColombo, Sri Lanka - The New Indian Express",
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
+        "Important Notice for patients on long-term treatments",
+        "Sri Lanka issues fresh landslide warnings as death toll hits 607\nColombo, Sri Lanka - The New Indian Express"
       ]
     },
     "Tourism": {
@@ -50,20 +50,20 @@
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times",
+        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
       ]
     },
     "IT": {
-      "risk_score": 0.31,
-      "opp_score": 0,
+      "risk_score": 0.56,
+      "opp_score": 0.05,
       "risk_level": "Medium",
       "opp_level": "Low",
       "top_drivers": [
+        "How can Colombo’s recovery from Cyclone Ditwah be transformative? - The Sunday Times, Sri Lanka",
         "Cyclone Ditwah impact: IAF airlifts 65-tonne Bailey Bridge to Colombo amid India’s efforts to aid Sri Lanka - The Hindu",
-        "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu",
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
+        "Satellite images show Cyclone Ditwah’s devastation in Sri Lanka's Colombo - The Hindu"
       ]
     },
     "Agriculture": {
@@ -72,9 +72,9 @@
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times",
+        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
       ]
     },
     "Logistics": {
@@ -83,33 +83,38 @@
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times",
+        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera"
       ]
     },
     "Energy": {
-      "risk_score": 0.67,
-      "opp_score": 0,
+      "risk_score": 1.0,
+      "opp_score": 0.08,
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka declares emergency as floods wreak havoc across Colombo - Al Jazeera",
-        "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
-        "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
+        "Cabraal and three others acquitted in Greek Bond Case",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Xinhua",
+        "Chinese emergency humanitarian flood relief supplies arrive in Colombo - Global Times"
       ]
     },
     "Banking": {
-      "risk_score": 0.67,
-      "opp_score": 0.26,
+      "risk_score": 0.91,
+      "opp_score": 0.62,
       "risk_level": "High",
-      "opp_level": "Low",
+      "opp_level": "High",
       "top_drivers": [
+        "Cabraal and three others acquitted in Greek Bond Case",
         "Jetstar Sets A New Standard For Affordable Travel With Nonstop Melbourne-Colombo Service, Connecting Australia To Sri Lanka Like Never Before - Travel And Tour World",
-        "Carrie A. Colombo Obituary (2025) - Mount Clemens, MI - Harold W. Vick Funeral Home, Inc. - Mount Clemens - Legacy | Obituary",
-        "New Melbourne To Colombo Route Set for August 2026 Launch - Travel And Tour World"
+        "Important Notice for patients on long-term treatments"
       ]
-    }
+    },
+    "risk_score": 0.8,
+    "opp_score": 0.26,
+    "risk_level": "High",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Gampaha": {
     "Apparel": {
@@ -181,7 +186,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Kalutara": {
     "Apparel": {
@@ -253,109 +263,129 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Kandy": {
     "Apparel": {
-      "risk_score": 0.65,
+      "risk_score": 1.0,
       "opp_score": 0,
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "FoodBeverage": {
       "risk_score": 0.0,
-      "opp_score": 0.07,
+      "opp_score": 0.13,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Water": {
       "risk_score": 0,
-      "opp_score": 0.55,
+      "opp_score": 0.99,
       "risk_level": "Low",
-      "opp_level": "Medium",
+      "opp_level": "High",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Retail": {
-      "risk_score": 0.13,
+      "risk_score": 0.2,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Tourism": {
-      "risk_score": 0.46,
+      "risk_score": 0.72,
       "opp_score": 0,
-      "risk_level": "Medium",
+      "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "IT": {
-      "risk_score": 0.03,
+      "risk_score": 0.07,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Agriculture": {
-      "risk_score": 0.65,
+      "risk_score": 1.0,
       "opp_score": 0,
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Logistics": {
-      "risk_score": 0.84,
+      "risk_score": 1.0,
       "opp_score": 0,
       "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Energy": {
-      "risk_score": 0.1,
+      "risk_score": 0.16,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
     },
     "Banking": {
-      "risk_score": 0.03,
+      "risk_score": 0.07,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
         "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected",
         "DMC issues red advisories for 40 DS divisions"
       ]
-    }
+    },
+    "risk_score": 0.42,
+    "opp_score": 0.11,
+    "risk_level": "Medium",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Matale": {
     "Apparel": {
@@ -447,99 +477,119 @@
       "top_drivers": [
         "DMC issues red advisories for 40 DS divisions"
       ]
-    }
+    },
+    "risk_score": 0.13,
+    "opp_score": 0.01,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Nuwara Eliya": {
     "Apparel": {
-      "risk_score": 0.36,
+      "risk_score": 0.73,
       "opp_score": 0,
-      "risk_level": "Medium",
+      "risk_level": "High",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
     "FoodBeverage": {
       "risk_score": 0,
-      "opp_score": 0.07,
+      "opp_score": 0.13,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
     "Water": {
       "risk_score": 0,
-      "opp_score": 0.42,
+      "opp_score": 0.86,
       "risk_level": "Low",
-      "opp_level": "Medium",
+      "opp_level": "High",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
     "Retail": {
-      "risk_score": 0.07,
+      "risk_score": 0.13,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
     "Tourism": {
-      "risk_score": 0.26,
+      "risk_score": 0.53,
       "opp_score": 0,
-      "risk_level": "Low",
+      "risk_level": "Medium",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
     "IT": {
-      "risk_score": 0.03,
-      "opp_score": 0,
-      "risk_level": "Low",
-      "opp_level": "Low",
-      "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
-      ]
-    },
-    "Agriculture": {
-      "risk_score": 0.36,
-      "opp_score": 0,
-      "risk_level": "Medium",
-      "opp_level": "Low",
-      "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
-      ]
-    },
-    "Logistics": {
-      "risk_score": 0.45,
-      "opp_score": 0,
-      "risk_level": "Medium",
-      "opp_level": "Low",
-      "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
-      ]
-    },
-    "Energy": {
       "risk_score": 0.07,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
     },
-    "Banking": {
-      "risk_score": 0.03,
+    "Agriculture": {
+      "risk_score": 0.73,
+      "opp_score": 0,
+      "risk_level": "High",
+      "opp_level": "Low",
+      "top_drivers": [
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
+      ]
+    },
+    "Logistics": {
+      "risk_score": 0.92,
+      "opp_score": 0,
+      "risk_level": "High",
+      "opp_level": "Low",
+      "top_drivers": [
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
+      ]
+    },
+    "Energy": {
+      "risk_score": 0.13,
       "opp_score": 0,
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": [
-        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster"
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
       ]
-    }
+    },
+    "Banking": {
+      "risk_score": 0.07,
+      "opp_score": 0,
+      "risk_level": "Low",
+      "opp_level": "Low",
+      "top_drivers": [
+        "Sri Lanka’s average daily tourist arrivals down in first 8 days of December after disaster",
+        "Sri Lanka’s average tourist arrivals down 21-pct in first week of Dec, recovery expected"
+      ]
+    },
+    "risk_score": 0.33,
+    "opp_score": 0.1,
+    "risk_level": "Medium",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Galle": {
     "Apparel": {
@@ -631,7 +681,12 @@
       "top_drivers": [
         "DMC issues red advisories for 40 DS divisions"
       ]
-    }
+    },
+    "risk_score": 0.13,
+    "opp_score": 0.01,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Matara": {
     "Apparel": {
@@ -703,7 +758,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Hambantota": {
     "Apparel": {
@@ -775,7 +835,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Jaffna": {
     "Apparel": {
@@ -847,7 +912,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Kilinochchi": {
     "Apparel": {
@@ -919,7 +989,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Mannar": {
     "Apparel": {
@@ -991,7 +1066,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Vavuniya": {
     "Apparel": {
@@ -1063,7 +1143,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Mullaitivu": {
     "Apparel": {
@@ -1135,7 +1220,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Batticaloa": {
     "Apparel": {
@@ -1207,7 +1297,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Trincomalee": {
     "Apparel": {
@@ -1279,7 +1374,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Ampara": {
     "Apparel": {
@@ -1351,7 +1451,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Badulla": {
     "Apparel": {
@@ -1423,7 +1528,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Monaragala": {
     "Apparel": {
@@ -1495,7 +1605,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Kurunegala": {
     "Apparel": {
@@ -1587,7 +1702,12 @@
       "top_drivers": [
         "DMC issues red advisories for 40 DS divisions"
       ]
-    }
+    },
+    "risk_score": 0.12,
+    "opp_score": 0.01,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Puttalam": {
     "Apparel": {
@@ -1689,7 +1809,12 @@
         "Work Begins to Restore Flood-Damaged Colombo–Puttalam Rail Line - Meyka",
         "Repairs underway on flood-damaged Colombo–Puttalam railway line - The Morning"
       ]
-    }
+    },
+    "risk_score": 0.32,
+    "opp_score": 0.05,
+    "risk_level": "Medium",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Anuradhapura": {
     "Apparel": {
@@ -1761,7 +1886,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Polonnaruwa": {
     "Apparel": {
@@ -1853,7 +1983,12 @@
       "top_drivers": [
         "Weather update for Polonnaruwa"
       ]
-    }
+    },
+    "risk_score": 0.06,
+    "opp_score": 0.01,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Ratnapura": {
     "Apparel": {
@@ -1925,7 +2060,12 @@
       "risk_level": "Low",
       "opp_level": "Low",
       "top_drivers": []
-    }
+    },
+    "risk_score": 0.0,
+    "opp_score": 0.0,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   },
   "Kegalle": {
     "Apparel": {
@@ -2017,6 +2157,11 @@
       "top_drivers": [
         "DMC issues red advisories for 40 DS divisions"
       ]
-    }
+    },
+    "risk_score": 0.06,
+    "opp_score": 0.01,
+    "risk_level": "Low",
+    "opp_level": "Low",
+    "event_count": 10
   }
 }

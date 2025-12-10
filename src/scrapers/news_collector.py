@@ -1,7 +1,7 @@
 import requests
 import feedparser
 import json
-from datetime import datetime
+from datetime import datetime,timezone
 from src.scrapers import yt_key
 
 from pathlib import Path   
@@ -120,6 +120,7 @@ def scrape_rss():
                     "title": entry.title,
                     "link": entry.link,
                     "published": entry.get("published", None),
+                    "timestamp": entry.get("published", datetime.now(timezone.utc).isoformat()),
                     "summary": summary.strip(),
                     "content": summary.strip()      # content fallback
                 })
@@ -150,6 +151,7 @@ def scrape_google_news():
                 "title": entry.title,
                 "link": entry.link,
                 "published": entry.get("published", None),
+                "timestamp": entry.get("published", datetime.now(timezone.utc).isoformat()),
                 "summary": summary.strip(),
                 "content": summary.strip()
             })
@@ -189,7 +191,9 @@ def scrape_youtube():
                         "link": video_url,
                         "published": item["snippet"]["publishedAt"],
                         "summary": item["snippet"].get("description", f"YouTube news: {title}"),
-                        "content": item["snippet"].get("description", f"YouTube news: {title}")
+                        "content": item["snippet"].get("description", f"YouTube news: {title}"),
+                        "timestamp": item["snippet"]["publishedAt"],
+
                     })
 
         except:
@@ -217,7 +221,10 @@ def scrape_gdelt():
                 "link": a.get("url"),
                 "published": a.get("seendate"),
                 "summary": a.get("summary", a.get("snippet", "")),
-                "content": a.get("content", "")
+                "content": a.get("content", ""),
+                "timestamp": a.get("seendate", datetime.now(timezone.utc).isoformat()),
+
+
             })
 
         return result
