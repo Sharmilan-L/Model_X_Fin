@@ -10,8 +10,17 @@ from pathlib import Path
 from textwrap import dedent
 import re
 
+import streamlit as st
+import time
+
 # Auto-refresh every 30 minutes (1800 seconds)
-st.autorefresh(interval=1800 * 1000, key="auto_refresh_30min")
+if "last_refresh" not in st.session_state:
+    st.session_state.last_refresh = time.time()
+
+# Check time difference
+if time.time() - st.session_state.last_refresh > 1800:
+    st.session_state.last_refresh = time.time()
+    st.experimental_rerun()
 
 # ----------------------------------------------------
 # Helpers
